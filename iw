@@ -10,8 +10,9 @@ int numPoints = 7500;
 
 void setup() {
   
-  size(960, 960, P3D);
+  //size(960, 960, P3D);
   smooth();
+  fullScreen(P3D);
 
 }
 
