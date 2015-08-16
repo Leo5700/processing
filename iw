@@ -2,7 +2,7 @@
 // processing fly test
 //
 
-import ComputationalGeometry.*;
+import ComputationalGeometry.*; // библиотека ставится прямо из процессинга
 
 IsoWrap wrap;
 
