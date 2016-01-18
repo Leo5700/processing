@@ -1,0 +1,39 @@
+/**
+ * Попробуем обработать картинку с веб-камеры.
+ * Размытость и цветность определяются потожением мыши в окне.
+ *
+ * 160118
+ */
+
+
+import processing.video.*;
+
+Capture video;
+
+float b, b_max, p, p_max;
+
+void setup() {
+  size(640, 480);
+  video = new Capture(this, width, height);
+  video.start();
+  b_max = 42;
+  p_max = 7; // 2..255
+}
+
+
+void draw() {
+  if (video.available()) {
+    video.read();
+    image(video, 0, 0, width, height);
+    
+     b = float(mouseX)/width*b_max;
+    //print (b, ' ');
+    filter(BLUR, b);
+    
+    p = int(float(mouseY)/height*(p_max-1)+2); // 2..255
+    //print (p, ' ');
+    filter(POSTERIZE, p);
+    
+    
+  } 
+}
