@@ -1,0 +1,85 @@
+/*
+    Превращаем картинку с вебкамеры в пятна.
+    Настройки фиксятся по клику, цвета меняются колесом.
+ *
+    160124, procrssing 3
+ */
+ 
+import processing.video.*;
+Capture video;
+
+float b, b_max, p, p_max, e, adjustbrightness;
+boolean fixparameters;
+
+void setup() {
+  size(640, 480); // Размер картинки зависит от камеры
+  video = new Capture(this, width, height);
+  video.start();
+  
+  b_max = 20; // Максимальный blur
+  fixparameters = false;
+  //p = 10; // Начальное число цветов
+}
+
+
+void draw() {
+  if (video.available()) {
+    video.read();
+    
+    loadPixels();
+    video.loadPixels();
+    
+    // Настройка яркости:
+    for (int x = 0; x < video.width; x++) {
+      for (int y = 0; y < video.height; y++) {
+        
+        // Calculate the 1D location from a 2D grid
+        int loc = x + y*video.width;
+        
+        float r,g,b;
+        r = red (video.pixels[loc]);
+        g = green (video.pixels[loc]);
+        b = blue (video.pixels[loc]);
+        
+        if (!fixparameters){
+          adjustbrightness = float(mouseY)/width*4.2;
+        }
+        r *= adjustbrightness;
+        g *= adjustbrightness;
+        b *= adjustbrightness;
+        
+        color c = color(r,g,b);
+        pixels[loc] = c;
+      }
+    }
+    updatePixels();
+    
+    
+    if (!fixparameters){
+      b = float(mouseX)/width*b_max;
+    }
+    filter(BLUR, b);
+    
+    
+    if (!fixparameters){
+      p = constrain(e, 2, 255);
+    }
+    filter(POSTERIZE, p);
+    
+  } 
+}
+
+void mouseWheel(MouseEvent event) {
+  e += event.getCount();
+}
+
+void mousePressed() {
+  fixparameters = !fixparameters;
+  if (fixparameters){
+    println(" fixparameters is:", fixparameters, "b =", b, "p =", p, "adjustbrightness =", adjustbrightness);
+  } else {
+    println(" fixparameters is:", fixparameters);
+  }
+}
+    
+    
